@@ -1,0 +1,24 @@
+{
+  "name": "cytoscape-compound-resize",
+  "description": "A Cytoscape.js extension to resize compound nodes through setting their paddings",
+  "main": "cytoscape-compound-resize.js",
+  "dependencies": {
+    "cytoscape": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iVis-at-Bilkent/cytoscape.js-compound-resize.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "keywords": [
+    "cytoscape",
+    "cyext"
+  ],
+  "license": "MIT"
+}
