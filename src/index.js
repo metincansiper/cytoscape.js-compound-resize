@@ -13,26 +13,18 @@
 
     var bindEvents = function (cy) {
       var ancestorsCornerPositions;
-      var movedNodes;
+      var effectedNodes;
       var ancestorMap;
-
-      cy.on('tapstart', 'node', function () {
-        var node = this;
-
-        if (node.selected()) {
-          movedNodes = cy.collection().add(node);
-        }
-        else {
-          movedNodes = cy.nodes(':selected').union(node);
-        }
-
-        // We care about the movement of top most nodes
-        movedNodes = elementUtilities.getTopMostNodes(movedNodes);
-
+      
+      // Fill the data of elements which will be affected by the respositioning 
+      var fillEffectedData = function(fillAncestorsMap) {
         ancestorsCornerPositions = [];
-        ancestorMap = {};
+        
+        if(fillAncestorsMap) {
+          ancestorMap = {};
+        }
 
-        movedNodes.each(function (i, ele) {
+        effectedNodes.each(function (i, ele) {
           var corners = []; // It will be used like a queue
           var currentAncestor = ele.parent()[0];
 
@@ -44,7 +36,7 @@
 
             corners.push(corner);
 
-            if (!ancestorMap[id]) {
+            if (fillAncestorsMap && !ancestorMap[id]) {
               ancestorMap[id] = currentAncestor;
             }
             
@@ -53,11 +45,10 @@
 
           ancestorsCornerPositions.push(corners);
         });
-      });
-
-      cy.on('drag', 'node', function () {
-        var node = this;
-
+      };
+      
+      // Update the paddings according to the movement
+      var updatePaddings = function() {
         // Keeps the already processed ancestors
         var processedAncestors = {};
 
@@ -134,26 +125,30 @@
             compoundResizeUtilities.setPaddings(ancestor, paddings);
           }
         });
+      };
+      
+      cy.on('tapstart', 'node', function () {
+        var node = this;
 
-        ancestorsCornerPositions = [];
+        if (node.selected()) {
+          effectedNodes = cy.collection().add(node);
+        }
+        else {
+          effectedNodes = cy.nodes(':selected').difference(node.ancestors()).union(node);
+        }
 
-        movedNodes.each(function (i, ele) {
-          var corners = []; // It will be used like a queue
-          var currentAncestor = ele.parent()[0];
+        // We care about the movement of top most nodes
+        effectedNodes = elementUtilities.getTopMostNodes(effectedNodes);
 
-          while (currentAncestor) {
-            var id = currentAncestor.id();
+        fillEffectedData(true);
+      });
 
-            var corner = elementUtilities.getCornerPositions(currentAncestor);
-            corner.id = id;
+      cy.on('drag', 'node', function () {
+        var node = this;
 
-            corners.push(corner);
-            
-            currentAncestor = currentAncestor.parent()[0];
-          }
-
-          ancestorsCornerPositions.push(corners);
-        });
+        updatePaddings();
+        
+        fillEffectedData(false);
       });
     };
 
