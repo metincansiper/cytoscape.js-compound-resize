@@ -1,45 +1,45 @@
-var compundResizeUtilities = function (cy) {
+var compoundResizeUtilities = function (cy) {
   var scratchUtilities = require("./scratchUtilities")();
-  
-  return {
+
+  var self = {
     setPaddings: function (nodes, paddings) {
       cy.startBatch();
 
       nodes.each(function (i, ele) {
-        var minPaddings = this.getMinPaddings(ele);
-        var maxPaddings = this.getMaxPaddings(ele);
+        var minPaddings = self.getMinimumPaddings(ele);
+        var maxPaddings = self.getMaximumPaddings(ele);
 
-        if (paddings.left > minPaddings.left && paddings.left > maxPaddings.left) {
+        if (paddings.left >= minPaddings.left && paddings.left <= maxPaddings.left) {
           ele.css('padding-left', paddings.left);
         }
 
-        if (paddings.right > minPaddings.right && paddings.right > maxPaddings.right) {
+        if (paddings.right >= minPaddings.right && paddings.right <= maxPaddings.right) {
           ele.css('padding-right', paddings.right);
         }
 
-        if (paddings.top > minPaddings.top && paddings.top > maxPaddings.top) {
+        if (paddings.top >= minPaddings.top && paddings.top <= maxPaddings.top) {
           ele.css('padding-top', paddings.top);
         }
 
-        if (paddings.bottom > minPaddings.bottom && paddings.bottom > maxPaddings.bottom) {
+        if (paddings.bottom >= minPaddings.bottom && paddings.bottom <= maxPaddings.bottom) {
           ele.css('padding-bottom', paddings.bottom);
         }
       });
-
+      
       cy.endBatch();
     },
     setExtremePaddings: function (nodes, paddings, minOrMax) {
       cy.startBatch();
 
       nodes.each(function (i, ele) {
-        var paddingLeft = ele.css('padding-left');
-        var paddingRight = ele.css('padding-right');
-        var paddingTop = ele.css('padding-top');
-        var paddingBottom = ele.css('padding-bottom');
+        var paddingLeft = parseInt(ele.css('padding-left'));
+        var paddingRight = parseInt(ele.css('padding-right'));
+        var paddingTop = parseInt(ele.css('padding-top'));
+        var paddingBottom = parseInt(ele.css('padding-bottom'));
 
         // Get the minimum paddings to set them
-        var extremePaddings = minOrMax === 'min' ? this.getMinimumPaddings(ele) : this.getMaximumPaddings(ele);
-        
+        var extremePaddings = minOrMax === 'min' ? self.getMinimumPaddings(ele) : self.getMaximumPaddings(ele);
+
         var sign = minOrMax === 'min' ? 1 : -1;
 
         if (paddings.left) {
@@ -48,7 +48,7 @@ var compundResizeUtilities = function (cy) {
             ele.css('padding-left', paddings.left);
           }
 
-          extremePaddings.left = paddings.left;
+          extremePaddings.left = parseInt(paddings.left);
         }
 
         if (paddings.right) {
@@ -57,7 +57,7 @@ var compundResizeUtilities = function (cy) {
             ele.css('padding-right', paddings.right);
           }
 
-          extremePaddings.right = paddings.right;
+          extremePaddings.right = parseInt(paddings.right);
         }
 
         if (paddings.top) {
@@ -66,7 +66,7 @@ var compundResizeUtilities = function (cy) {
             ele.css('padding-top', paddings.top);
           }
 
-          extremePaddings.top = paddings.top;
+          extremePaddings.top = parseInt(paddings.top);
         }
 
         if (paddings.bottom) {
@@ -75,7 +75,7 @@ var compundResizeUtilities = function (cy) {
             ele.css('padding-bottom', paddings.bottom);
           }
 
-          extremePaddings.bottom = paddings.bottom;
+          extremePaddings.bottom = parseInt(paddings.bottom);
         }
       });
 
@@ -83,13 +83,21 @@ var compundResizeUtilities = function (cy) {
     },
     getMinimumPaddings: function (node) {
       var paddings = scratchUtilities.getScratch(node).minPaddings;
-      return paddings ? paddings : {};
+      if (!paddings) {
+        paddings = scratchUtilities.getScratch(node).minPaddings = {};
+      }
+      return paddings;
     },
     getMaximumPaddings: function (node) {
       var paddings = scratchUtilities.getScratch(node).maxPaddings;
-      return paddings ? paddings : {};
+      if (!paddings) {
+        paddings = scratchUtilities.getScratch(node).maxPaddings = {};
+      }
+      return paddings;
     }
   };
+
+  return self;
 };
 
-module.exports = compundResizeUtilities;
+module.exports = compoundResizeUtilities;

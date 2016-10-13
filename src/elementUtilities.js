@@ -27,22 +27,10 @@ var elementUtilities = function () {
       var halfHeight = node.height() / 2;
       
       return {
-        'topLeft': {
-          x: posX - halfWidth,
-          y: posY - halfHeight
-        },
-        'topRight': {
-          x: posX + halfWidth,
-          y: posY - halfHeight
-        },
-        'bottomLeft': {
-          x: posX - halfWidth,
-          y: posY + halfHeight
-        },
-        'bottomRight': {
-          x: posX + halfWidth,
-          y: posY + halfHeight
-        }
+        'top': posY - halfHeight,
+        'bottom': posY + halfHeight,
+        'left': posX - halfWidth,
+        'right': posX + halfWidth
       };
     }
   };

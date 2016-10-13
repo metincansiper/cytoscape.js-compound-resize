@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var elementUtilities = require("./elementUtilities")();
-  var compundResizeUtilities;
+  var compoundResizeUtilities;
 
   // registers the extension on a cytoscape lib ref
   var register = function (cytoscape) {
@@ -47,6 +47,8 @@
             if (!ancestorMap[id]) {
               ancestorMap[id] = currentAncestor;
             }
+            
+            currentAncestor = currentAncestor.parent()[0];
           }
 
           ancestorsCornerPositions.push(corners);
@@ -68,8 +70,8 @@
               continue;
             }
 
-            processedAncestors[cornersQueue.id] = true;
-            var ancestor = ancestorMap[cornersQueue.id];
+            processedAncestors[oldCorners.id] = true;
+            var ancestor = ancestorMap[oldCorners.id];
             var currentCorners = elementUtilities.getCornerPositions(ancestor);
 
             if (currentCorners.top === oldCorners.top && currentCorners.bottom === oldCorners.bottom
@@ -82,29 +84,29 @@
             var topDiff = currentCorners.top - oldCorners.top;
 
             if (topDiff != 0) {
-              var currentPadding = ancestor.css('padding-top');
+              var currentPadding = parseInt(ancestor.css('padding-top'));
               paddingTop = currentPadding + topDiff;
             }
             
             var bottomDiff = currentCorners.bottom - oldCorners.bottom;
 
             if (bottomDiff != 0) {
-              var currentPadding = ancestor.css('padding-bottom');
+              var currentPadding = parseInt(ancestor.css('padding-bottom'));
               paddingBottom = currentPadding - bottomDiff;
             }
             
             var leftDiff = currentCorners.left - oldCorners.left;
 
             if (leftDiff != 0) {
-              var currentPadding = ancestor.css('padding-left');
+              var currentPadding = parseInt(ancestor.css('padding-left'));
               paddingLeft = currentPadding + leftDiff;
             }
             
             var rightDiff = currentCorners.right - oldCorners.right;
 
             if (rightDiff != 0) {
-              var currentPadding = ancestor.css('padding-right');
-              paddingRight = currentPadding + rightDiff;
+              var currentPadding = parseInt(ancestor.css('padding-right'));
+              paddingRight = currentPadding - rightDiff;
             }
             
             if(!paddingTop && !paddingBottom && !paddingLeft && !paddingRight) {
@@ -129,7 +131,7 @@
               paddings.right = paddingRight;
             }
             
-            compundResizeUtilities.setPaddings(ancestor, paddings);
+            compoundResizeUtilities.setPaddings(ancestor, paddings);
           }
         });
 
@@ -146,6 +148,8 @@
             corner.id = id;
 
             corners.push(corner);
+            
+            currentAncestor = currentAncestor.parent()[0];
           }
 
           ancestorsCornerPositions.push(corners);
@@ -157,10 +161,24 @@
       var eles = this;
       var cy = this.cy();
       
-      compundResizeUtilities = require('./compundResizeUtilities')(cy);
+      compoundResizeUtilities = require('./compoundResizeUtilities')(cy);
       bindEvents(cy);
+      
+      var compounds = cy.nodes('$node > node');
+      
+      compounds.each(function(i, ele){
+        var paddings = {
+          'top': ele.css('padding-top'),
+          'bottom': ele.css('padding-bottom'),
+          'left': ele.css('padding-left'),
+          'right': ele.css('padding-right')
+        };
+        
+        compoundResizeUtilities.setExtremePaddings(ele, paddings, 'min');
+        compoundResizeUtilities.setExtremePaddings(ele, paddings, 'max');
+      });
 
-      return this; // chainability
+      return compoundResizeUtilities; // Provide API
     });
 
   };

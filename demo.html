@@ -68,27 +68,30 @@
 					elements: {
 						nodes: [
 							{ data: { id: 'j', name: 'Jerry' } },
-							{ data: { id: 'e', name: 'Elaine' } },
-							{ data: { id: 'k', name: 'Kramer' } },
+							{ data: { id: 'e', name: 'Elaine', parent: 'j' } },
+							{ data: { id: 'k', name: 'Kramer', parent: 'j' } },
 							{ data: { id: 'g', name: 'George' } }
 						],
-						edges: [
-							{ data: { source: 'j', target: 'e' } },
-							{ data: { source: 'j', target: 'k' } },
-							{ data: { source: 'j', target: 'g' } },
-							{ data: { source: 'e', target: 'j' } },
-							{ data: { source: 'e', target: 'k' } },
-							{ data: { source: 'k', target: 'j' } },
-							{ data: { source: 'k', target: 'e' } },
-							{ data: { source: 'k', target: 'g' } },
-							{ data: { source: 'g', target: 'j' } }
-						]
+//						edges: [
+//							{ data: { source: 'j', target: 'e' } },
+//							{ data: { source: 'j', target: 'k' } },
+//							{ data: { source: 'j', target: 'g' } },
+//							{ data: { source: 'e', target: 'j' } },
+//							{ data: { source: 'e', target: 'k' } },
+//							{ data: { source: 'k', target: 'j' } },
+//							{ data: { source: 'k', target: 'e' } },
+//							{ data: { source: 'k', target: 'g' } },
+//							{ data: { source: 'g', target: 'j' } }
+//						]
 					},
 				});
 
 				// demo your collection ext
-				cy.elements().compound-resize( /* args... */ );
-
+				var api = cy.elements().compoundResize( /* args... */ );
+                                var ele = cy.$('#j');
+                                api.setExtremePaddings(ele, {'right': 100}, 'max');
+                                api.setPaddings(ele, {'right': 100});
+                                console.log(api.getMaximumPaddings(ele).right);
 			});
 		</script>
 	</head>
