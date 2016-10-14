@@ -6,12 +6,16 @@
 		<title>cytoscape-compound-resize.js demo</title>
 
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-
+                
+                <script src="https://code.jquery.com/jquery-3.1.0.slim.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.8.4/ocanvas.min.js"></script>
 		<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
 
 		<!-- for testing with local version of cytoscape.js -->
 		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
-
+                
+                <script src="lib/cytoscape-node-resize.js"></script>
+                <!--<script src="https://cdn.rawgit.com/ivis-at-bilkent/cytoscape.js-node-resize/master/cytoscape-node-resize.js"></script>-->
 		<script src="cytoscape-compound-resize.js"></script>
 
 		<style>
@@ -69,7 +73,7 @@
 						nodes: [
 							{ data: { id: 'j', name: 'Jerry' } },
 							{ data: { id: 'e', name: 'Elaine', parent: 'j' } },
-							{ data: { id: 'k', name: 'Kramer', parent: 'j' } },
+							{ data: { id: 'k', name: 'Kramer', parent: 'e' } },
 							{ data: { id: 'g', name: 'George', parent: 'e' } }
 						],
 //						edges: [
@@ -85,13 +89,14 @@
 //						]
 					},
 				});
+                                
+                                cy.nodeResize();
 
 				// demo your collection ext
 				var api = cy.elements().compoundResize( /* args... */ );
                                 var ele = cy.$('#j');
                                 api.setExtremePaddings(ele, {'right': 100}, 'max');
                                 api.setPaddings(ele, {'right': 100});
-                                console.log(api.getMaximumPaddings(ele).right);
 			});
 		</script>
 	</head>

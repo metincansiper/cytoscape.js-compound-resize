@@ -150,6 +150,17 @@
         
         fillEffectedData(false);
       });
+      
+      cy.on('resizestart', function(e, type, nodes) {
+        effectedNodes = nodes;
+        fillEffectedData(true);
+      });
+      
+      cy.on('resizedrag', function(e, type, nodes) {
+        updatePaddings();
+        
+        fillEffectedData(false);
+      });
     };
 
     cytoscape('collection', 'compoundResize', function () {
