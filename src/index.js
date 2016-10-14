@@ -3,6 +3,10 @@
   'use strict';
   var elementUtilities = require("./elementUtilities")();
   var compoundResizeUtilities;
+  var mode;
+  
+  // Event functions
+  var tapStartFcn, dragFcn, resizeStartFcn, resizeDragFcn;
 
   // registers the extension on a cytoscape lib ref
   var register = function (cytoscape) {
@@ -11,16 +15,23 @@
       return;
     } // can't register if cytoscape unspecified
 
+    var unbindEvents = function (cy) {
+      cy.off('node', tapStartFcn);
+      cy.off(dragFcn);
+      cy.off(resizeStartFcn);
+      cy.off(resizeDragFcn);
+    };
+
     var bindEvents = function (cy) {
       var ancestorsCornerPositions;
       var effectedNodes;
       var ancestorMap;
-      
+
       // Fill the data of elements which will be affected by the respositioning 
-      var fillEffectedData = function(fillAncestorsMap) {
+      var fillEffectedData = function (fillAncestorsMap) {
         ancestorsCornerPositions = [];
-        
-        if(fillAncestorsMap) {
+
+        if (fillAncestorsMap) {
           ancestorMap = {};
         }
 
@@ -39,16 +50,16 @@
             if (fillAncestorsMap && !ancestorMap[id]) {
               ancestorMap[id] = currentAncestor;
             }
-            
+
             currentAncestor = currentAncestor.parent()[0];
           }
 
           ancestorsCornerPositions.push(corners);
         });
       };
-      
+
       // Update the paddings according to the movement
-      var updatePaddings = function() {
+      var updatePaddings = function () {
         // Keeps the already processed ancestors
         var processedAncestors = {};
 
@@ -78,56 +89,60 @@
               var currentPadding = parseInt(ancestor.css('padding-top'));
               paddingTop = currentPadding + topDiff;
             }
-            
+
             var bottomDiff = currentCorners.bottom - oldCorners.bottom;
 
             if (bottomDiff != 0) {
               var currentPadding = parseInt(ancestor.css('padding-bottom'));
               paddingBottom = currentPadding - bottomDiff;
             }
-            
+
             var leftDiff = currentCorners.left - oldCorners.left;
 
             if (leftDiff != 0) {
               var currentPadding = parseInt(ancestor.css('padding-left'));
               paddingLeft = currentPadding + leftDiff;
             }
-            
+
             var rightDiff = currentCorners.right - oldCorners.right;
 
             if (rightDiff != 0) {
               var currentPadding = parseInt(ancestor.css('padding-right'));
               paddingRight = currentPadding - rightDiff;
             }
-            
-            if(!paddingTop && !paddingBottom && !paddingLeft && !paddingRight) {
+
+            if (!paddingTop && !paddingBottom && !paddingLeft && !paddingRight) {
               continue;
             }
-            
+
             var paddings = {};
-            
-            if(paddingTop) {
+
+            if (paddingTop) {
               paddings.top = paddingTop;
             }
-            
-            if(paddingBottom) {
+
+            if (paddingBottom) {
               paddings.bottom = paddingBottom;
             }
-            
-            if(paddingLeft) {
+
+            if (paddingLeft) {
               paddings.left = paddingLeft;
             }
-            
-            if(paddingRight) {
+
+            if (paddingRight) {
               paddings.right = paddingRight;
             }
-            
+
             compoundResizeUtilities.setPaddings(ancestor, paddings);
           }
         });
       };
-      
-      cy.on('tapstart', 'node', function () {
+
+      cy.on('tapstart', 'node', tapStartFcn = function () {
+        if( mode !== 'min' ) {
+          return;
+        }
+        
         var node = this;
 
         if (node.selected()) {
@@ -143,46 +158,46 @@
         fillEffectedData(true);
       });
 
-      cy.on('drag', 'node', function () {
-        var node = this;
-
-        updatePaddings();
+      cy.on('drag', 'node', dragFcn = function () {
+        if( mode !== 'min' ) {
+          return;
+        }
         
+        updatePaddings();
         fillEffectedData(false);
       });
-      
-      cy.on('resizestart', function(e, type, nodes) {
+
+      cy.on('resizestart', resizeStartFcn = function (e, type, nodes) {
+        if( mode !== 'min' ) {
+          return;
+        }
+        
         effectedNodes = nodes;
         fillEffectedData(true);
       });
-      
-      cy.on('resizedrag', function(e, type, nodes) {
-        updatePaddings();
+
+      cy.on('resizedrag', resizeDragFcn = function (e, type, nodes) {
+        if( mode !== 'min' ) {
+          return;
+        }
         
+        updatePaddings();
         fillEffectedData(false);
       });
     };
 
-    cytoscape('collection', 'compoundResize', function () {
-      var eles = this;
-      var cy = this.cy();
+    cytoscape('core', 'compoundResize', function (_mode) {
+      var cy = this;
       
+      if (mode === 'destroy') {
+        unbindEvents(cy);
+      }
+      
+      mode = _mode;
+
       compoundResizeUtilities = require('./compoundResizeUtilities')(cy);
+      compoundResizeUtilities.setMode(mode);
       bindEvents(cy);
-      
-      var compounds = cy.nodes('$node > node');
-      
-      compounds.each(function(i, ele){
-        var paddings = {
-          'top': ele.css('padding-top'),
-          'bottom': ele.css('padding-bottom'),
-          'left': ele.css('padding-left'),
-          'right': ele.css('padding-right')
-        };
-        
-        compoundResizeUtilities.setExtremePaddings(ele, paddings, 'min');
-        compoundResizeUtilities.setExtremePaddings(ele, paddings, 'max');
-      });
 
       return compoundResizeUtilities; // Provide API
     });

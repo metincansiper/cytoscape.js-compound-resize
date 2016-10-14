@@ -73,6 +73,7 @@
 						nodes: [
 							{ data: { id: 'j', name: 'Jerry' } },
 							{ data: { id: 'e', name: 'Elaine', parent: 'j' } },
+                                                        { data: { id: 'f', name: 'f', parent: 'j' } },
 							{ data: { id: 'k', name: 'Kramer', parent: 'e' } },
 							{ data: { id: 'g', name: 'George', parent: 'e' } }
 						],
@@ -93,8 +94,8 @@
                                 cy.nodeResize();
 
 				// demo your collection ext
-				var api = cy.elements().compoundResize( /* args... */ );
-                                var ele = cy.$('#j');
+				var api = window.api = cy.compoundResize( 'min' );
+                                var ele = window.ele = cy.$('#j');
                                 api.setExtremePaddings(ele, {'right': 100}, 'max');
                                 api.setPaddings(ele, {'right': 100});
 			});
