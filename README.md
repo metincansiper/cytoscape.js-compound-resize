@@ -102,6 +102,7 @@ var paddings = {
 You do not have to specify all of the for corners. For example if you want to just set the top and left paddings you can use an 
 object similar to
 
+```js
 var paddings = {
     top: 5,
     left: 5
