@@ -86,28 +86,28 @@
             var topDiff = currentCorners.top - oldCorners.top;
 
             if (topDiff != 0) {
-              var currentPadding = parseInt(ancestor.css('padding-top'));
+              var currentPadding = parseFloat(ancestor.css('padding-top'));
               paddingTop = currentPadding + topDiff;
             }
 
             var bottomDiff = currentCorners.bottom - oldCorners.bottom;
 
             if (bottomDiff != 0) {
-              var currentPadding = parseInt(ancestor.css('padding-bottom'));
+              var currentPadding = parseFloat(ancestor.css('padding-bottom'));
               paddingBottom = currentPadding - bottomDiff;
             }
 
             var leftDiff = currentCorners.left - oldCorners.left;
 
             if (leftDiff != 0) {
-              var currentPadding = parseInt(ancestor.css('padding-left'));
+              var currentPadding = parseFloat(ancestor.css('padding-left'));
               paddingLeft = currentPadding + leftDiff;
             }
 
             var rightDiff = currentCorners.right - oldCorners.right;
 
             if (rightDiff != 0) {
-              var currentPadding = parseInt(ancestor.css('padding-right'));
+              var currentPadding = parseFloat(ancestor.css('padding-right'));
               paddingRight = currentPadding - rightDiff;
             }
 
