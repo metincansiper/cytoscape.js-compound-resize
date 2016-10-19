@@ -33,8 +33,8 @@ var compoundResizeUtilities = function (cy, mode) {
             'right': ele.css('padding-right')
           };
 
-          self.setExtremePaddings(ele, paddings, 'min');
-          self.setExtremePaddings(ele, paddings, 'max');
+          self.setExtremePaddings(ele, paddings, 'min', true);
+          self.setExtremePaddings(ele, paddings, 'max', true);
         });
       }
     },
@@ -72,7 +72,8 @@ var compoundResizeUtilities = function (cy, mode) {
       
       cy.endBatch();
     },
-    setExtremePaddings: function (nodes, _paddings, minOrMax) {
+    // Set extreme paddings of the nodes use force parameter if you do not need to satisfy 'minPaddings <= maxPaddings' rule
+    setExtremePaddings: function (nodes, _paddings, minOrMax, force) {
       if (mode !== 'min') {
         return;
       }
@@ -100,14 +101,14 @@ var compoundResizeUtilities = function (cy, mode) {
         // Filter paddings from _paddings note that the rule of 'maxPaddings >= minPaddings' should be satisfied
         if (minOrMax === 'min') {
           for (var prop in _paddings) {
-            if (!maxPaddings[prop] || _paddings[prop] <= maxPaddings[prop]) {
+            if (force || _paddings[prop] <= maxPaddings[prop]) {
               paddings[prop] = _paddings[prop];
             }
           }
         }
         else if (minOrMax === 'max') {
           for (var prop in _paddings) {
-            if (!minPaddings[prop] || _paddings[prop] >= minPaddings[prop]) {
+            if (force || _paddings[prop] >= minPaddings[prop]) {
               paddings[prop] = _paddings[prop];
             }
           }

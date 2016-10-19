@@ -189,15 +189,17 @@
     cytoscape('core', 'compoundResize', function (_mode) {
       var cy = this;
       
-      if (mode === 'destroy') {
+      if (_mode === 'destroy') {
         unbindEvents(cy);
+        return;
       }
       
-      mode = _mode;
-
-      compoundResizeUtilities = require('./compoundResizeUtilities')(cy);
-      compoundResizeUtilities.setMode(mode);
-      bindEvents(cy);
+      if( _mode != 'get' ) {
+        compoundResizeUtilities = require('./compoundResizeUtilities')(cy);
+        mode = _mode;
+        compoundResizeUtilities.setMode(mode);
+        bindEvents(cy);
+      }
 
       return compoundResizeUtilities; // Provide API
     });

@@ -117,19 +117,23 @@ api.getMode();
 // The paddings which are not between min and max paddings are not set.
 api.setPaddings(nodes, paddings); 
 // This function returns directly if the mode is not 'min'. Sets the extreme (min or max) paddings for the given nodes. 
-// You can give 'min' or 'max' to the 'minOrMax' parameter. Also note that this operation checks if the rule of 'maxPaddings >= minPaddings'
-// is broken and does not set extreme paddings if it will be broken. If the min paddings will be higher then or the maximum paddings will be
-// lower then the original paddings then it sets the original paddings to the extreme paddings.
-api.setExtremePaddings(nodes, paddings, minOrMax); 
+// You can give 'min' or 'max' to the 'minOrMax' parameter. Also note that this operation checks if the rule of 
+//'maxPaddings >= minPaddings' is broken and does not set extreme paddings if it will be broken. 
+// However, you can break this rule by assigning a truthy value to 'force' parameter. If the min paddings will be higher then
+// or the maximum paddings will be lower then the original paddings then it sets the original paddings to the extreme paddings. 
+api.setExtremePaddings(nodes, paddings, minOrMax, force); 
 // Get the minimum paddings of a given node. Returns null if the mode is not 'min'
 api.getMinimumPaddings(node);
 // Get the maximum paddings of a given node. Returns null if the mode is not 'min'
 api.getMaximumPaddings(node);
 ```
 
-Or you can destroy the extension
+You can get an extension instance or destroy the extension as well
 
 ```js
+// Get an extension instance
+cy.compoundResize( 'get' );
+// Destroy the extension
 cy.compoundResize( 'destroy' );
 ```
 
