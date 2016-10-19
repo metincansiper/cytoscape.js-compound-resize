@@ -113,11 +113,15 @@ var paddings = {
 // Set the mode. If the mode is switched to 'free' it sets the paddings to the min paddings else if the mode is switched to
 // 'min' it sets the extreme ( maximum and minimum ) paddings to the current original paddings.
 api.setMode(newmode); 
+// Get the current mode
+api.getMode();
 // This function returns directly if the mode is not 'min'. It sets the paddings of the nodes conditionally. 
 // The paddings which are not between min and max paddings are not set.
 api.setPaddings(nodes, paddings); 
 // This function returns directly if the mode is not 'min'. Sets the extreme (min or max) paddings for the given nodes. 
-// You can give 'min' or 'max' to the 'minOrMax' parameter
+// You can give 'min' or 'max' to the 'minOrMax' parameter. Also note that this operation checks if the rule of 'maxPaddings >= minPaddings'
+// is broken and does not set extreme paddings if it will be broken. If the min paddings will be higher then or the maximum paddings will be
+// lower then the original paddings then it sets the original paddings to the extreme paddings.
 api.setExtremePaddings(nodes, paddings, minOrMax); 
 // Get the minimum paddings of a given node. Returns null if the mode is not 'min'
 api.getMinimumPaddings(node);

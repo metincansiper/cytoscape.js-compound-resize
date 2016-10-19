@@ -38,6 +38,9 @@ var compoundResizeUtilities = function (cy, mode) {
         });
       }
     },
+    getMode: function() {
+      return mode;
+    },
     setPaddings: function (nodes, paddings) {
       
       if (mode !== 'min') {
@@ -69,7 +72,7 @@ var compoundResizeUtilities = function (cy, mode) {
       
       cy.endBatch();
     },
-    setExtremePaddings: function (nodes, paddings, minOrMax) {
+    setExtremePaddings: function (nodes, _paddings, minOrMax) {
       if (mode !== 'min') {
         return;
       }
@@ -82,11 +85,35 @@ var compoundResizeUtilities = function (cy, mode) {
         var paddingTop = parseInt(ele.css('padding-top'));
         var paddingBottom = parseInt(ele.css('padding-bottom'));
 
-        // Get the minimum paddings to set them
-        var extremePaddings = minOrMax === 'min' ? self.getMinimumPaddings(ele) : self.getMaximumPaddings(ele);
+        var minPaddings = self.getMinimumPaddings(ele);
+        var maxPaddings = self.getMaximumPaddings(ele);
+        
+        // Get the extreme paddings to set them
+        var extremePaddings = minOrMax === 'min' ? minPaddings : maxPaddings;
 
         var sign = minOrMax === 'min' ? 1 : -1;
+        
+        // Clone _paddings into paddings object
+        var paddings = {
+        };
+        
+        // Filter paddings from _paddings note that the rule of 'maxPaddings >= minPaddings' should be satisfied
+        if (minOrMax === 'min') {
+          for (var prop in _paddings) {
+            if (!maxPaddings[prop] || _paddings[prop] <= maxPaddings[prop]) {
+              paddings[prop] = _paddings[prop];
+            }
+          }
+        }
+        else if (minOrMax === 'max') {
+          for (var prop in _paddings) {
+            if (!minPaddings[prop] || _paddings[prop] >= minPaddings[prop]) {
+              paddings[prop] = _paddings[prop];
+            }
+          }
+        }
 
+        // Set the extreme paddings where applicable
         if (paddings.left) {
           if (paddingLeft * sign < paddings.left * sign) {
             // Paddings cannot be smaller then min paddings and cannot be bigger then max paddings
