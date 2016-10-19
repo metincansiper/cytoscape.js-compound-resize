@@ -81,10 +81,10 @@ var compoundResizeUtilities = function (cy, mode) {
       cy.startBatch();
 
       nodes.each(function (i, ele) {
-        var paddingLeft = parseInt(ele.css('padding-left'));
-        var paddingRight = parseInt(ele.css('padding-right'));
-        var paddingTop = parseInt(ele.css('padding-top'));
-        var paddingBottom = parseInt(ele.css('padding-bottom'));
+        var paddingLeft = parseFloat(ele.css('padding-left'));
+        var paddingRight = parseFloat(ele.css('padding-right'));
+        var paddingTop = parseFloat(ele.css('padding-top'));
+        var paddingBottom = parseFloat(ele.css('padding-bottom'));
 
         var minPaddings = self.getMinimumPaddings(ele);
         var maxPaddings = self.getMaximumPaddings(ele);
@@ -121,7 +121,7 @@ var compoundResizeUtilities = function (cy, mode) {
             ele.css('padding-left', paddings.left);
           }
 
-          extremePaddings.left = parseInt(paddings.left);
+          extremePaddings.left = parseFloat(paddings.left);
         }
 
         if (paddings.right) {
@@ -130,7 +130,7 @@ var compoundResizeUtilities = function (cy, mode) {
             ele.css('padding-right', paddings.right);
           }
 
-          extremePaddings.right = parseInt(paddings.right);
+          extremePaddings.right = parseFloat(paddings.right);
         }
 
         if (paddings.top) {
@@ -139,7 +139,7 @@ var compoundResizeUtilities = function (cy, mode) {
             ele.css('padding-top', paddings.top);
           }
 
-          extremePaddings.top = parseInt(paddings.top);
+          extremePaddings.top = parseFloat(paddings.top);
         }
 
         if (paddings.bottom) {
@@ -148,7 +148,7 @@ var compoundResizeUtilities = function (cy, mode) {
             ele.css('padding-bottom', paddings.bottom);
           }
 
-          extremePaddings.bottom = parseInt(paddings.bottom);
+          extremePaddings.bottom = parseFloat(paddings.bottom);
         }
       });
 
