@@ -81,8 +81,6 @@ Plain HTML/JS has the extension registered for you automatically, because no `re
 
 ## API
 
-Please briefly describe your API here:
-
 ```js
 var api = cy.compoundResize( mode ); // valid modes are 'free' or 'min'
 ```
