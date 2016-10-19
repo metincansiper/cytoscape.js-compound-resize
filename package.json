@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-compound-resize",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "A Cytoscape.js extension to resize compound nodes through setting their paddings",
   "main": "cytoscape-compound-resize.js",
   "spm": {
