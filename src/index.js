@@ -42,7 +42,7 @@
           while (currentAncestor) {
             var id = currentAncestor.id();
 
-            var corner = elementUtilities.getCornerPositions(currentAncestor);
+            var corner = elementUtilities.getOuterCornerPositions(currentAncestor);
             corner.id = id;
 
             corners.push(corner);
@@ -74,7 +74,7 @@
 
             processedAncestors[oldCorners.id] = true;
             var ancestor = ancestorMap[oldCorners.id];
-            var currentCorners = elementUtilities.getCornerPositions(ancestor);
+            var currentCorners = elementUtilities.getOuterCornerPositions(ancestor);
 
             if (currentCorners.top === oldCorners.top && currentCorners.bottom === oldCorners.bottom
                     && currentCorners.left === oldCorners.left && currentCorners.right === oldCorners.right) {

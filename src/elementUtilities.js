@@ -20,7 +20,7 @@ var elementUtilities = function () {
       return roots;
     },
     // Get the corner positions of the node
-    getCornerPositions: function(node) {
+    getOuterCornerPositions: function(node) {
       var posX = node.position('x');
       var posY = node.position('y');
       var halfWidth = node.width() / 2;
