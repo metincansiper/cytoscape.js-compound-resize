@@ -9,10 +9,14 @@ var compoundResizeUtilities = function (cy, mode) {
       
       var compounds = cy.nodes('$node > node');
       
-      // If the new mode is 'free' set the paddings to the minimums before setting the mode
+      // If the new mode is 'free' set the paddings to the minimums before setting the mode if minimum paddings exists
       if (newmode === 'free') {
         compounds.each(function (i, ele) {
           var minPaddings = self.getMinimumPaddings(ele);
+          
+          if (!minPaddings) {
+            return;
+          }
 
           ele.css('padding-top', minPaddings.top);
           ele.css('padding-bottom', minPaddings.bottom);
