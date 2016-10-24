@@ -376,10 +376,10 @@ module.exports = elementUtilities;
         var node = this;
 
         if (node.selected()) {
-          effectedNodes = cy.collection().add(node);
+          effectedNodes = cy.nodes(':selected').difference(node.ancestors());
         }
         else {
-          effectedNodes = cy.nodes(':selected').difference(node.ancestors()).union(node);
+          effectedNodes = cy.collection().add(node);
         }
 
         // We care about the movement of top most nodes
