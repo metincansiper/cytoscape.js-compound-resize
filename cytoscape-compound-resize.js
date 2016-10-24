@@ -236,7 +236,7 @@ module.exports = elementUtilities;
   var mode;
   
   // Event functions
-  var tapStartFcn, dragFcn, resizeStartFcn, resizeDragFcn;
+  var tapStartFcn, dragFcn, resizeStartFcn, resizeDragFcn, resizeEndFcn;
 
   // registers the extension on a cytoscape lib ref
   var register = function (cytoscape) {
@@ -250,6 +250,7 @@ module.exports = elementUtilities;
       cy.off(dragFcn);
       cy.off(resizeStartFcn);
       cy.off(resizeDragFcn);
+      cy.off(resizeEndFcn);
     };
 
     var bindEvents = function (cy) {
@@ -367,9 +368,12 @@ module.exports = elementUtilities;
           }
         });
       };
+      
+      var resizing; // A flag indicating if any node is being resized
 
       cy.on('tapstart', 'node', tapStartFcn = function () {
-        if( mode !== 'min' ) {
+        // If the mode is not 'min' or any node is being resized return directly
+        if( mode !== 'min' || resizing ) {
           return;
         }
         
@@ -398,6 +402,8 @@ module.exports = elementUtilities;
       });
 
       cy.on('resizestart', resizeStartFcn = function (e, type, nodes) {
+        resizing = true; // Set the 'resizing' flag 
+        
         if( mode !== 'min' ) {
           return;
         }
@@ -413,6 +419,10 @@ module.exports = elementUtilities;
         
         updatePaddings();
         fillEffectedData(false);
+      });
+      
+      cy.on('resizeend', resizeEndFcn = function (e, type, nodes) {
+        resizing = undefined; // Unset the 'resizing' flag
       });
     };
 
